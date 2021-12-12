@@ -1,4 +1,5 @@
 const fs = require('fs');
+// writing files
 const writeFile = fileContent => {
     return new Promise((resolve, reject) => {
         fs.writeFile('./dist/index.html', fileContent, err => {
@@ -21,7 +22,8 @@ const writeFile = fileContent => {
 //copying file
 const copyFile = () => {
     return new Promise ((resolve, reject) => {
-        fs.copyFile('./src/style.css', './dist/index.html', err => {
+        // corrected error - copying css style sheet from original to dist file
+        fs.copyFile('./src/style.css', './dist.style.css', err => {
             if (err) {
                 reject (err);
                 return;
@@ -34,4 +36,8 @@ const copyFile = () => {
     });
 };
 
+/* Export this object with the two functions, used as methods,
+writeFile and copyFile, using module.exports*/
+/* The name of the function as both the property (i.e. the method) name 
+and the value of the method.*/
 module.exports = { writeFile, copyFile };

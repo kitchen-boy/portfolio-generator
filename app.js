@@ -1,9 +1,9 @@
 const inquirer = require ('inquirer');
-const fs = require('fs');
 // this expression assigns the anonymous HTML template function in page-template.js to the variable generatePage.
 const generatePage = require('./src/page-template.js');
-
-// const pageHTML = generatePage(name, github);
+/* this will import the exported object from generate-site.js, 
+allowing us to use generateSite.writeFile() and generateSite.copyFile().*/
+const { writeFile, copyFile } = require('./utils/generate-site.js');
 
 const promptUser = () => {
     return inquirer.prompt([
@@ -53,18 +53,16 @@ const promptUser = () => {
     ]);
 };
 const promptProject = portfolioData => {
-    console.log(`
+  console.log(`
     =================
     Add a New Project
     =================
-    `);
-    // If there's no 'projects' array property, create one
+  `);
+  // If there's no 'projects' array property, create one
     if (!portfolioData.projects) {
       portfolioData.projects = [];
     }
-
-    return inquirer
-      .prompt([
+    return inquirer.prompt([
       {
         type: 'input',
         name: 'name',
@@ -126,9 +124,9 @@ const promptProject = portfolioData => {
     .then(projectData => {
       portfolioData.projects.push(projectData);
       if (projectData.confirmAddProject) {
-         return promptProject(portfolioData);
+          return promptProject(portfolioData);
       } else {
-        return portfolioData;
+          return portfolioData;
       }
     }); 
 };
@@ -198,8 +196,11 @@ const promptProject = portfolioData => {
   });
 }); */
 
-
+// The Inquirer prompt Promise chain at bottom of app.js
 // Refactored fs functionality to use Promises instead of callback functions:
+// No more callback functions happening inside of callback functions
+/* All of the asynchronous functionality is now Promise-based & 
+we can continue to return the separate functions' output into the next .then() method.*/
 promptUser() 
     .then(promptProject)
     .then(portfolioData => {
@@ -215,6 +216,10 @@ promptUser()
     .then(copyFileResponse => {
       console.log(copyFileResponse); 
     })
+    /* only need to write one .catch() method
+     to handle any error that may occur with any of the Promise-based functions.*/
+    /* If we need to execute a Promise's reject() function, 
+    it will jump rigth to the .catch() method. */
     .catch(err => {
       console.log(err);
     });
